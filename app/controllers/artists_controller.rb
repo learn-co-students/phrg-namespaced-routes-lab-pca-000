@@ -1,16 +1,21 @@
 # frozen_string_literal: true
 
 class ArtistsController < ApplicationController
+  before_action :set_artist, only: %i[show edit update destroy]
   def index
     @artists = Artist.all
   end
 
-  def show
-    @artist = Artist.find(params[:id])
-  end
+  def show; end
 
   def new
-    @artist = Artist.new
+    # binding.pry
+    if !preferences
+      @artist = Artist.new
+
+    else
+      redirect_to artists_path
+    end
   end
 
   def create
@@ -23,13 +28,9 @@ class ArtistsController < ApplicationController
     end
   end
 
-  def edit
-    @artist = Artist.find(params[:id])
-  end
+  def edit; end
 
   def update
-    @artist = Artist.find(params[:id])
-
     @artist.update(artist_params)
 
     if @artist.save
@@ -40,7 +41,6 @@ class ArtistsController < ApplicationController
   end
 
   def destroy
-    @artist = Artist.find(params[:id])
     @artist.destroy
     flash[:notice] = "Artist deleted."
     redirect_to artists_path
@@ -48,7 +48,15 @@ class ArtistsController < ApplicationController
 
 private
 
+  def set_artist
+    @artist = Artist&.find_by(id: params[:id])
+  end
+
   def artist_params
     params.require(:artist).permit(:name)
+  end
+
+  def preferences
+    @preferences = Preference.first
   end
 end
