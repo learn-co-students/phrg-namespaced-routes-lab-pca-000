@@ -1,5 +1,5 @@
-class Admin::PreferencesController < ApplicationController
+# frozen_string_literal: true
 
-  def index
-  end
+class Admin::PreferencesController < ApplicationController
+  def index; end
 end

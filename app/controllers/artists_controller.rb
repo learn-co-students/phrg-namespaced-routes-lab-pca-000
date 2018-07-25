@@ -14,7 +14,7 @@ class ArtistsController < ApplicationController
     if preference.allow_create_artists == false
       redirect_to artists_path
     else
-    @artist = Artist.new
+      @artist = Artist.new
     end
   end
 
