@@ -10,7 +10,7 @@ class SongsController < ApplicationController
         @songs = @artist.songs
       end
     else
-      @songs = Song.all
+      songs_sort
     end
   end
 
@@ -27,7 +27,11 @@ class SongsController < ApplicationController
   end
 
   def new
-    @song = Song.new
+    if !Preference.all.empty? && Preference.first.allow_create_songs == true
+      @song = Song.new
+    else
+      redirect_to songs_path
+    end
   end
 
   def create
@@ -67,5 +71,17 @@ private
 
   def song_params
     params.require(:song).permit(:title, :artist_name)
+  end
+
+  def songs_sort
+    @songs = if song_condition
+               Song.all.order(title: :desc)
+             else
+               Song.all.order(:title)
+             end
+  end
+
+  def song_condition
+    !Preference.all.empty? && Preference.first.song_sort_order == "DESC"
   end
 end
