@@ -2,7 +2,11 @@
 
 class ArtistsController < ApplicationController
   def index
-    @artists = Artist.all
+    @artists = if artist_condition
+                 Artist.all.order(name: :desc)
+               else
+                 Artist.all.order(:name)
+               end
   end
 
   def show
@@ -10,7 +14,11 @@ class ArtistsController < ApplicationController
   end
 
   def new
-    @artist = Artist.new
+    if !Preference.all.empty? && Preference.first.allow_create_artists == true
+      @artist = Artist.new
+    else
+      redirect_to artists_path
+    end
   end
 
   def create
@@ -50,5 +58,9 @@ private
 
   def artist_params
     params.require(:artist).permit(:name)
+  end
+
+  def artist_condition
+    !Preference.all.empty? && Preference.first.artist_sort_order == "DESC"
   end
 end

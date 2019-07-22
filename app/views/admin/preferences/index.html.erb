@@ -1,0 +1,5 @@
+<% if @preferences.empty? %>
+  <%= link_to "Create Preferences", new_admin_preference_path %>
+<% else %>
+  <%= link_to "Show Preferences", admin_preference_path(@preferences.first)%>
+<% end %>
